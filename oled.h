@@ -24,6 +24,7 @@ void oled_display_str(char *s, int n, int x, int y);
 void oled_putc(char c);
 void oled_puts(char *s, int n);
 void oled_printf(char *fmt, ...);
+void oled_printfln(char *fmt, ...);
 
 
 #define ADDR_MODE_HORIZONTAL    0       // Horizontal Addressing Mode

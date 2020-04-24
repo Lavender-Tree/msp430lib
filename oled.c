@@ -1,6 +1,7 @@
 #include "oled.h"
 #include "font.h"
 #include <stdarg.h>
+#include <string.h>
 
 static int pos_x = 0, pos_y = 0; 
 
@@ -211,13 +212,14 @@ char* i16tostr(unsigned int num, char *buf)
     return &buf[++i];
 }
 
-void oled_printf(char *fmt, ...)
+void __internal_printf(char *fmt, va_list args)
 {
-    char buf[6] = {0}, op = 0;
+    char buf[0x20] = {0}, op = 0;
     char *p = 0;
-    unsigned short num = 0;
-    va_list args;
-    va_start(args, fmt);
+    union 
+    {
+        unsigned short vunsigned;
+    } value;
 
     while ( (op = *fmt++) ) {
         /* char cannot be printed */
@@ -236,18 +238,18 @@ void oled_printf(char *fmt, ...)
                 oled_putc(va_arg(args, char));
                 break;
             case 'd':
-                {
-                    num = va_arg(args, short);
-                    p = i16tostr(num, buf);
-                    oled_puts(p, 6);
-                }
+            {
+                value.vunsigned = va_arg(args, short);
+                p = i16tostr(value.vunsigned, buf);
+                oled_puts(p, 6);
                 break;
+            }
             case 's':
-                {
-                    p = va_arg(args, char *);
-                    oled_puts(p, 100);
-                }
+            {
+                p = va_arg(args, char *);
+                oled_puts(p, 100);
                 break;
+            }
             default:
                 break;
             }
@@ -255,6 +257,28 @@ void oled_printf(char *fmt, ...)
             oled_putc(op);
         }
     }
+}
 
+void oled_printf(char *fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    __internal_printf(fmt, args);
     va_end(args);
+}
+
+
+void oled_printfln(char *fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    __internal_printf(fmt, args);
+    va_end(args);
+
+    while (pos_x < OLED_WIDTH) {
+        oled_send_data(0);
+        pos_x++;
+    }
+    pos_x = 0, pos_y++;
+    oled_set_pos(pos_x, pos_y);
 }
