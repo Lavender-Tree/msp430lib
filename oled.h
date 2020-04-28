@@ -15,6 +15,7 @@ void oled_send_cmd(char cmd);
 void oled_send_data(char data);
 void oled_init(void);
 void oled_set_pos(int x, int y);
+void oled_set_p_pos(int x, int y);
 void oled_cls(void);
 void oled_clear_line(char line);
 void oled_display_img(char *img, int width, int height, int _x, int _y);

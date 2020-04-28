@@ -101,6 +101,13 @@ void oled_set_pos(int x, int y)
 	oled_send_cmd(((x + 2) & 0x0f));        // unknown bug: "+2" ?
 }
 
+/* set postion and (pos_x, pos_y) */
+void oled_set_p_pos(int x, int y)
+{
+    pos_x = x, pos_y = y;
+    oled_set_pos(pos_x, pos_y);
+}
+
 /* clear screen */
 void oled_cls(void)
 {
@@ -120,8 +127,7 @@ void oled_clear_line(char line)
     oled_set_pos(0, line);
     for (pos_x = 0; pos_x < OLED_WIDTH; pos_x++)
         oled_send_data(0);
-    pos_x = 0, pos_y = line;
-    oled_set_pos(0, line);
+    oled_set_p_pos(0, line);
 }
 
 /* display an image */
@@ -279,6 +285,5 @@ void oled_printfln(char *fmt, ...)
         oled_send_data(0);
         pos_x++;
     }
-    pos_x = 0, pos_y++;
-    oled_set_pos(pos_x, pos_y);
+    oled_set_p_pos(0, pos_y + 1);
 }
