@@ -36,7 +36,7 @@ void oled_printfln(char *fmt, ...);
 static inline oled_set_addr_mode(char mode)
 {
     oled_send_cmd(0x20); 
-	oled_send_cmd(mode);
+    oled_send_cmd(mode);
 }
 
 

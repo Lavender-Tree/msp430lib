@@ -9,20 +9,20 @@ static int pos_x = 0, pos_y = 0;
 void oled_send_cmd(char cmd)
 {
     IIC_start();
-	IIC_writebyte(0x78);    // Slave address, SA0=0
-	IIC_writebyte(0x00);    // write command
-	IIC_writebyte(cmd);
-	IIC_stop();
+    IIC_writebyte(0x78);    // Slave address, SA0=0
+    IIC_writebyte(0x00);    // write command
+    IIC_writebyte(cmd);
+    IIC_stop();
 }
 
 /* send data to RAM */
 void oled_send_data(char data)
 {
     IIC_start();
-	IIC_writebyte(0x78);
-	IIC_writebyte(0x40);
-	IIC_writebyte(data);
-	IIC_stop();
+    IIC_writebyte(0x78);
+    IIC_writebyte(0x40);
+    IIC_writebyte(data);
+    IIC_stop();
 }
 
 /* oled init */
@@ -30,75 +30,75 @@ void oled_init(void)
 {
     IIC_ioinit();
 
-	/* display off */
-	oled_send_cmd(0xAE); 
-	
-	/* set memory addressing mode */
+    /* display off */
+    oled_send_cmd(0xAE); 
+        
+    /* set memory addressing mode */
     oled_set_addr_mode(ADDR_MODE_PAGE);
-	
-	/* Set Page Start Address for Page Addressing Mode */
-	oled_send_cmd(0xb0); 	// 0-7
+        
+    /* Set Page Start Address for Page Addressing Mode */
+    oled_send_cmd(0xb0);    // 0-7
 
-	/* Set Common Ouput Scan Direction */
-	oled_send_cmd(0xc8);		// COM[N-1] ~ COM[0]
+    /* Set Common Ouput Scan Direction */
+    oled_send_cmd(0xc8);    // COM[N-1] ~ COM[0]
 
-	/* set start line address */
-	oled_send_cmd(0x40);		// 0
+    /* set start line address */
+    oled_send_cmd(0x40);    // 0
 
-	/* contrast control register */
-	oled_send_cmd(0x81); 
-	oled_send_cmd(0x7f);
+    /* contrast control register */
+    oled_send_cmd(0x81); 
+    oled_send_cmd(0x7f);
 
-	/* set segment re-map  */
-	oled_send_cmd(0xa1); 	// reverse direction
+    /* set segment re-map  */
+    oled_send_cmd(0xa1);    // reverse direction
 
-	/* Set Normal/Reverse Display */
-	oled_send_cmd(0xa6); 	// normal
+    /* Set Normal/Reverse Display */
+    oled_send_cmd(0xa6);    // normal
 
-	/* set multiplex ratio */
-	oled_send_cmd(0xa8);
-	oled_send_cmd(0x3F); 	// 64
+    /* set multiplex ratio */
+    oled_send_cmd(0xa8);
+    oled_send_cmd(0x3F);    // 64
 
-	/* Set Entire Display */
-	oled_send_cmd(0xa4); 	// (off) Output follows RAM content
+    /* Set Entire Display */
+    oled_send_cmd(0xa4);    // (off) Output follows RAM content
 
-	/* (14) set display offset */
-	oled_send_cmd(0xd3); 
-	oled_send_cmd(0x00); 	// 0
+    /* (14) set display offset */
+    oled_send_cmd(0xd3); 
+    oled_send_cmd(0x00);    // 0
 
-	/* (15) set display clock divide ratio/oscillator frequency */
-	oled_send_cmd(0xd5);
-	oled_send_cmd(0xf0); 	// set divide ratio
-	
-	/* (16) Set Dis-charge/Pre-charge Period */
-	oled_send_cmd(0xd9);	
-	oled_send_cmd(0x22); 	// pre-charge: 2 DCLKs (POR) | dis-charge: 2 DCLKs (POR)
+    /* (15) set display clock divide ratio/oscillator frequency */
+    oled_send_cmd(0xd5);
+    oled_send_cmd(0xf0);    // set divide ratio
+        
+    /* (16) Set Dis-charge/Pre-charge Period */
+    oled_send_cmd(0xd9);    
+    oled_send_cmd(0x22);    // pre-charge: 2 DCLKs (POR) | dis-charge: 2 DCLKs (POR)
 
-	/* (17) Set Common pads hardware configuration */
-	oled_send_cmd(0xda);
-	oled_send_cmd(0x12);		// H, Alternative. (POR)
+    /* (17) Set Common pads hardware configuration */
+    oled_send_cmd(0xda);
+    oled_send_cmd(0x12);    // H, Alternative. (POR)
 
-	/* (18) Set VCOM Deselect Level */
-	oled_send_cmd(0xdb);
-	oled_send_cmd(0x20); 	// 0x20, 0.77 x Vcc
+    /* (18) Set VCOM Deselect Level */
+    oled_send_cmd(0xdb);
+    oled_send_cmd(0x20);    // 0x20, 0.77 x Vcc
 
-	// /* (10) set DC-DC enable */
-	// oled_send_cmd(0x8d);
-	// oled_send_cmd(0x14);
+    // /* (10) set DC-DC enable */
+    // oled_send_cmd(0x8d);
+    // oled_send_cmd(0x14);
 
-	/* display on */
-	oled_send_cmd(0xaf); 
+    /* display on */
+    oled_send_cmd(0xaf); 
 
-	oled_cls();
-	oled_set_pos(0, 0);
+    oled_cls();
+    oled_set_pos(0, 0);
 }
 
 /* set current postion */
 void oled_set_pos(int x, int y)
 {
     oled_send_cmd(0xb0 | y);
-	oled_send_cmd(((x & 0xf0) >> 4) | 0x10);
-	oled_send_cmd(((x + 2) & 0x0f));        // unknown bug: "+2" ?
+    oled_send_cmd(((x & 0xf0) >> 4) | 0x10);
+    oled_send_cmd(((x + 2) & 0x0f));        // unknown bug: "+2" ?
 }
 
 /* set postion and (pos_x, pos_y) */
@@ -113,11 +113,11 @@ void oled_cls(void)
 {
     int y, x;
     pos_x = 0, pos_y = 0;
-	for (y = 0; y < OLED_HEIGHT / 8; y++) {
+    for (y = 0; y < OLED_HEIGHT / 8; y++) {
         oled_set_pos(0, y);
-		for (x = 0; x < OLED_WIDTH; x++)
-			oled_send_data(0);
-	}
+        for (x = 0; x < OLED_WIDTH; x++)
+            oled_send_data(0);
+    }
     oled_set_pos(0, 0);
 }
 
@@ -134,13 +134,13 @@ void oled_clear_line(char line)
 void oled_display_img(char *img, int width, int height, int _x, int _y)
 {
     int x = 0, y = 0;
-	height /= 8;
-	for (y = 0; y < height; y++) {
-		oled_set_pos(_x, y + _y);
-		for (x = 0; x < width; x++) {
-			oled_send_data(img[x + y * width]);
-		}
-	}
+    height /= 8;
+    for (y = 0; y < height; y++) {
+        oled_set_pos(_x, y + _y);
+        for (x = 0; x < width; x++) {
+            oled_send_data(img[x + y * width]);
+        }
+    }
     oled_set_pos(pos_x, pos_y);
 }
 
